@@ -1,0 +1,11 @@
+model MovieProducer {
+  movieId    Int
+  producerId Int
+
+  movie    Movie    @relation(fields: [movieId], references: [id])
+  producer Producer @relation(fields: [producerId], references: [id])
+
+  @@id([movieId, producerId])
+
+  @@map("movies_producers")
+}
