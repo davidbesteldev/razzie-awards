@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
 import { DatabaseService } from '@app/core/database/database.service'
-
 import {
   GetAwardIntervalItemDto,
   GetAwardsIntervalsResponseDto,

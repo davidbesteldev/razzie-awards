@@ -2,7 +2,6 @@ import { Logger } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 
 import { AppModule } from '@app/app.module'
-
 import { EnvService } from '@app/core/config'
 import { appMiddlewares } from '@app/core/middlewares/app.middleware'
 

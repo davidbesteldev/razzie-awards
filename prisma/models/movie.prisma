@@ -1,8 +1,8 @@
 model Movie {
-  id        Int      @id @default(autoincrement())
-  year      Int
-  title     String
-  winner    Boolean  @default(false)
+  id     Int     @id @default(autoincrement())
+  year   Int
+  title  String
+  winner Boolean @default(false)
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

@@ -10,9 +10,7 @@ import {
 } from '@generated/prisma/client'
 
 import { deduplicateByKey } from '@app/common/utils'
-
 import { DatabaseService } from '@app/core/database/database.service'
-
 import { CreateMovieDTO } from '@app/modules/movies/dto/create-movie.dto'
 import { buildMovieKey } from '@app/modules/movies/utils/movie-key.util'
 

@@ -2,7 +2,6 @@ import { Injectable, Logger } from '@nestjs/common'
 import * as path from 'node:path'
 
 import { csvToJson, parseDelimitedList } from '@app/common/utils'
-
 import { CreateMovieDTO } from '@app/modules/movies/dto/create-movie.dto'
 import { CreateMoviesBatchHelper } from '@app/modules/movies/helpers/create-movies-batch.helper'
 

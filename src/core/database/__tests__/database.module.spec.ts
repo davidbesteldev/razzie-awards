@@ -1,5 +1,4 @@
 import { createTestingModuleWithGlobals } from '@app/common/tests/helpers/create-testing-module-with-globals'
-
 import { EnvModule } from '@app/core/config'
 
 import { DatabaseModule } from '../database.module'

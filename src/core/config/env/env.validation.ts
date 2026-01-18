@@ -1,5 +1,4 @@
 import { buildOriginalEnv } from '@app/common/tests/__fixtures__/env.fixture'
-
 import { envConfig, originalEnv } from '@app/core/config/env/env.config'
 
 const envValidation = (config: Record<string, unknown>) => {

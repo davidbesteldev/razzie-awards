@@ -2,7 +2,6 @@ import { ConfigService } from '@nestjs/config'
 import { TestingModule } from '@nestjs/testing'
 
 import { createTestingModuleWithGlobals } from '@app/common/tests/helpers/create-testing-module-with-globals'
-
 import { EnvModule, EnvService } from '@app/core/config'
 
 describe('createTestingModuleWithGlobals', () => {

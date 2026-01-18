@@ -6,6 +6,5 @@ model MovieProducer {
   producer Producer @relation(fields: [producerId], references: [id])
 
   @@id([movieId, producerId])
-
   @@map("movies_producers")
 }

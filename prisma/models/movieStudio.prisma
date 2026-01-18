@@ -6,6 +6,5 @@ model MovieStudio {
   studio Studio @relation(fields: [studioId], references: [id])
 
   @@id([movieId, studioId])
-
   @@map("movies_studios")
 }
