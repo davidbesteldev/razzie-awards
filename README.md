@@ -14,6 +14,9 @@ API to import and analyze Golden Raspberry Awards data.
 ## ⚙️ Initial Setup
 
 ```bash
+# Create the .env file according to the .env.example
+cp .env.example .env
+
 # Install dependencies
 npm install
 
