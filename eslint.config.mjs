@@ -7,7 +7,7 @@ import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
   {
-    ignores: ['eslint.config.mjs', 'scripts', 'generated'],
+    ignores: ['eslint.config.mjs', 'scripts', 'generated', 'dist', 'coverage'],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
@@ -18,9 +18,11 @@ export default tseslint.config(
         ...globals.node,
         ...globals.jest,
       },
-      sourceType: 'commonjs',
+      sourceType: 'module',
       parserOptions: {
-        projectService: true,
+        projectService: {
+          allowDefaultProject: ['*.config.ts'],
+        },
         tsconfigRootDir: import.meta.dirname,
       },
     },
@@ -38,43 +40,29 @@ export default tseslint.config(
       'unused-imports': unusedImportsPlugin,
     },
     rules: {
-      semi: ['error', 'never'],
-      quotes: ['error', 'single'],
-      'linebreak-style': ['error', 'unix'],
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-unsafe-argument': 'warn',
+
       '@typescript-eslint/no-unused-vars': [
         'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
+
       'unused-imports/no-unused-imports': 'error',
+
       'import/order': [
         'error',
         {
           groups: [['builtin', 'external'], 'internal', ['parent', 'sibling', 'index']],
           pathGroups: [
             {
-              pattern: '@app/*',
-              group: 'internal',
-              position: 'after',
-            },
-            {
-              pattern: '@app/common/**',
-              group: 'internal',
-              position: 'after',
-            },
-            {
-              pattern: '@app/core/**',
-              group: 'internal',
-              position: 'after',
-            },
-            {
-              pattern: '@app/modules/**',
+              pattern: '@app/**',
               group: 'internal',
               position: 'after',
             },
           ],
+          pathGroupsExcludedImportTypes: ['builtin'],
           'newlines-between': 'always',
           alphabetize: { order: 'asc', caseInsensitive: true },
         },
@@ -82,9 +70,10 @@ export default tseslint.config(
     },
   },
   {
-    files: ['**/*.spec.ts', '**/*.test.ts'],
+    files: ['**/*.spec.ts', '**/*.test.ts', 'test/**/*'],
     rules: {
       '@typescript-eslint/unbound-method': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
     },
   },
 )

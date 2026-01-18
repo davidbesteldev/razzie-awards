@@ -26,5 +26,5 @@
       "@generated/*": ["generated/*"]
     }
   },
-  "include": ["src", "generated"]
+  "include": ["src", "test", "generated"]
 }

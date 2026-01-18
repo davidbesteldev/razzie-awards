@@ -10,6 +10,12 @@ const config: Config.InitialOptions = {
   testRegex: '.spec.ts$',
   transform: { '^.+\\.(t|j)s$': 'ts-jest' },
   collectCoverageFrom: ['src/**/*.ts'],
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/dist/',
+    '.e2e-spec.ts$',
+    '<rootDir>/test/',
+  ],
   coveragePathIgnorePatterns: [
     '/index\\.ts$',
     '/src/main.ts',
