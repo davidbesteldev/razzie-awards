@@ -1,21 +1,39 @@
 import csv from 'csv-parser'
 import * as fs from 'node:fs'
 
+export type CsvRawRow = Record<string, string>
+
+type CsvToJsonOptions = {
+  requiredColumns?: (keyof CsvRawRow)[]
+  separator?: string
+}
+type CsvToJsonResult<T> = {
+  valid: T[]
+  invalid: Array<{ row: CsvRawRow; reason: string }>
+}
+
 /**
- * Streams a CSV file and converts it to a JSON array using a transform function.
+ * Streams a CSV file and converts it to JSON using a transform function.
+ * Only valid rows are returned; invalid ones are collected with the reason.
  * Default separator is ';'.
+ *
  * @example
- * await csvToJson('users.csv', (row) => ({ name: row.name, age: Number(row.age) }));
- * // Returns: [{ name: 'Alice', age: 30 }]
+ * const { valid, invalid } = await csvToJson(
+ *   'users.csv',
+ *   (row) => ({ name: row.name, age: Number(row.age) }),
+ *   { requiredColumns: ['name', 'age'] }
+ * )
+ * // valid:   [{ name: 'Alice', age: 30 }]
+ * // invalid: [{ row: { name: '', age: '25' }, reason: 'Missing required columns: name' }]
  */
-export const csvToJson = <TRow, TResult>(
+export const csvToJson = <TResult>(
   filePath: string,
-  mapRow: (row: TRow) => TResult,
-  options?: { separator?: string; requiredColumns?: (keyof TRow)[] },
-): Promise<TResult[]> => {
+  mapRow: (row: CsvRawRow) => TResult | undefined,
+  options?: CsvToJsonOptions,
+): Promise<CsvToJsonResult<TResult>> => {
   return new Promise((resolve, reject) => {
-    const result: TResult[] = []
-    const requiredColumns = options?.requiredColumns
+    const valid: TResult[] = []
+    const invalid: Array<{ row: CsvRawRow; reason: string }> = []
 
     const stream = fs.createReadStream(filePath)
 
@@ -28,21 +46,42 @@ export const csvToJson = <TRow, TResult>(
 
     stream
       .pipe(csv({ separator: options?.separator ?? ';' }))
-      .on('error', (error) => reject(error))
-      .on('data', (row: TRow) => {
-        if (!row || Object.keys(row).length === 0) return
-
-        if (requiredColumns) {
-          const isValid = requiredColumns.every((col) => {
-            const val = row[col]
-            return val !== undefined && val !== null && String(val).trim() !== ''
-          })
-
-          if (!isValid) return
+      .on('error', reject)
+      .on('data', (row: CsvRawRow) => {
+        if (Object.keys(row).length === 0) {
+          invalid.push({ row, reason: 'Empty row' })
+          return
         }
 
-        result.push(mapRow(row))
+        if (options?.requiredColumns) {
+          const missing = options.requiredColumns.filter((col) => {
+            const val = row[col]
+            return typeof val !== 'string' || val.trim() === ''
+          })
+
+          if (missing.length > 0) {
+            invalid.push({
+              row,
+              reason: `Missing required columns: ${missing.join(', ')}`,
+            })
+            return
+          }
+        }
+
+        try {
+          const mapped = mapRow(row)
+          if (!mapped) {
+            invalid.push({ row, reason: 'Invalid row mapping' })
+          } else {
+            valid.push(mapped)
+          }
+        } catch (err) {
+          invalid.push({
+            row,
+            reason: err instanceof Error ? err.message : 'Error mapping row',
+          })
+        }
       })
-      .on('end', () => resolve(result))
+      .on('end', () => resolve({ valid, invalid }))
   })
 }
