@@ -3,8 +3,11 @@ import { Test } from '@nestjs/testing'
 import request from 'supertest'
 
 import { AppModule } from '@app/app.module'
-import { GetAwardsIntervalsResponseDto } from '@app/modules/producers/dto/get-awards-interval.dto'
 
+/**
+ * NOTE:
+ * Data is loaded via MovieService onModuleInit, so manual creation is not required here.
+ */
 describe('GET /producers/awards-intervals', () => {
   let app: INestApplication
 
@@ -26,19 +29,23 @@ describe('GET /producers/awards-intervals', () => {
       .get('/producers/awards-intervals')
       .expect(200)
 
-    const body = response.body as GetAwardsIntervalsResponseDto
-
-    expect(body).toHaveProperty('min')
-    expect(body).toHaveProperty('max')
-
-    expect(Array.isArray(body.min)).toBe(true)
-    expect(Array.isArray(body.max)).toBe(true)
-
-    const sample = body.min[0] || body.max[0]
-
-    expect(sample).toHaveProperty('producer')
-    expect(sample).toHaveProperty('interval')
-    expect(sample).toHaveProperty('previousWin')
-    expect(sample).toHaveProperty('followingWin')
+    expect(response.body).toEqual({
+      min: [
+        {
+          producer: 'Joel Silver',
+          interval: 1,
+          previousWin: 1990,
+          followingWin: 1991,
+        },
+      ],
+      max: [
+        {
+          producer: 'Matthew Vaughn',
+          interval: 13,
+          previousWin: 2002,
+          followingWin: 2015,
+        },
+      ],
+    })
   })
 })

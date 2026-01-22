@@ -43,6 +43,9 @@ npm run start:debug
 # Unit tests
 npm run test:unit
 
+# Prepare (E2E) test
+npm run pretest:e2e
+
 # Integration (E2E) tests
 npm run test:e2e
 ```
